@@ -26,6 +26,9 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+'결제선생'이라는 서비스를 벤치마킹 하여 간단한 기능으로만 구현하고자 하는 프로젝트입니다.
+예약 상품을 판매하고, 결제수단으로 무통장입금을 통한 주문에 대하여 주문 상태를 관리할 수 있도록 합니다.
+
 ## Installation
 
 ```bash
