@@ -21,9 +21,7 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.username, sub: user.userId };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.jwtService.sign(payload); // 토큰 생성
   }
 
   async register(username: string, password: string) {

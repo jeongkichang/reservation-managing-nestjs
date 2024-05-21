@@ -1,4 +1,4 @@
-import { Controller, Request, Post, UseGuards, Body } from '@nestjs/common';
+import { Controller, Request, Post, UseGuards, Body, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -9,8 +9,10 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Request() req, @Res() res) {
+    const accessToken = await this.authService.login(req.user);
+    // 클라이언트에서 리다이렉트 처리하기 위해 토큰을 반환합니다.
+    res.json({ access_token: accessToken }); // JSON 형태로 반환
   }
 
   @Post('register')
