@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 80%;
+      max-width: 400px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input, textarea {
+      display: block;
+      width: calc(100% - 20px);
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .submit-button {
+      background-color: #007bff; /* 파란색 */
+      color: white;
+    }
+    .submit-button:hover {
+      background-color: #0056b3;
+    }
+    .back-button {
+      background-color: #6c757d;
+      color: white;
+    }
+    .back-button:hover {
+      background-color: #5a6268;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Add Product</h1>
+    <form id="add-product-form">
+      <input type="text" id="name" name="name" placeholder="상품명" required>
+      <input type="text" id="price" name="price" placeholder="가격" required>
+      <textarea id="description" name="description" placeholder="설명" required></textarea>
+      <button type="submit" class="submit-button">추가</button>
+      <button type="button" class="back-button" onclick="window.location.href='/product-list.html'">취소</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        const currentUrl = window.location.href;
+        window.location.href = `/login.html?redirect=${encodeURIComponent(currentUrl)}`;
+        return;
+      }
+      const params = new URLSearchParams(window.location.search);
+      const productId = params.get('id');
+
+      if (productId) {
+        document.getElementById('form-title').textContent = '상품 수정';
+        const response = await fetch(`/api/products/${productId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          },
+        });
+
+        if (response.ok) {
+          const product = await response.json();
+          document.getElementById('name').value = product.name;
+          document.getElementById('price').value = product.price;
+          document.getElementById('description').value = product.description;
+        } else {
+          alert('상품 정보를 불러오는데 실패했습니다.');
+          window.location.href = '/product-list.html';
+        }
+      }
+
+      document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const price = document.getElementById('price').value.replace(/,/g, ''); // 쉼표 제거
+        const description = document.getElementById('description').value;
+
+        let method = 'POST';
+        let url = '/api/products';
+        if (productId) {
+          method = 'PUT';
+          url = `/api/products/${productId}`;
+        }
+
+        const response = await fetch(url, {
+          method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+          },
+          body: JSON.stringify({ name, price, description }),
+        });
+
+        if (response.ok) {
+          alert('상품이 성공적으로 저장되었습니다.');
+          window.location.href = '/product-list.html'; // 상품 리스트 페이지로 리다이렉트
+        } else {
+          alert('상품 저장에 실패했습니다.');
+        }
+      });
+    });
+
+    document.getElementById('price').addEventListener('input', function (e) {
+      let value = e.target.value.replace(/,/g, '');
+      if (!isNaN(value) && value !== '') {
+        e.target.value = Number(value).toLocaleString('ko-KR');
+      } else {
+        e.target.value = '';
+      }
+    });
+  </script>
+</body>
+</html>

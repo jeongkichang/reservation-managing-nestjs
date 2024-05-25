@@ -74,7 +74,12 @@
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('access_token', data.access_token);
-        window.location.href = '/dashboard.html'; // 대시보드 페이지로 리다이렉트
+
+        // 리다이렉트 URL이 있으면 해당 URL로 리다이렉트
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectUrl = urlParams.get('redirect') || '/dashboard.html';
+        window.location.href = redirectUrl;
+
       } else {
         alert('로그인에 실패했습니다.');
       }

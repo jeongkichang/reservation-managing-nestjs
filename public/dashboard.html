@@ -21,6 +21,11 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     h1 {
       margin-bottom: 20px;
     }
@@ -34,8 +39,26 @@
       font-size: 16px;
       margin-top: 20px;
     }
-    button:hover {
+    .product-button {
+      background-color: #8bc34a;
+      color: white;
+    }
+    .product-button:hover {
+      background-color: #7cb342;
+    }
+    .edit-button {
+      background-color: #007bff;
+      color: white;
+    }
+    .edit-button:hover {
       background-color: #0056b3;
+    }
+    .delete-button {
+      background-color: #ff4d4d;
+      color: white;
+    }
+    .delete-button:hover {
+      background-color: #cc0000;
     }
   </style>
 </head>
@@ -43,8 +66,11 @@
   <div class="container">
     <h1>대시보드</h1>
     <div id="dashboard-content">예약 주문관리 시스템에 오신 것을 환영합니다.</div>
-    <button id="edit-profile-button">회원정보 수정</button>
-    <button id="logout-button">로그아웃</button>
+    <div class="button-container">
+      <button id="product-page-button" class="product-button">상품 페이지</button>
+      <button id="edit-profile-button" class="edit-button">회원정보 수정</button>
+      <button id="logout-button" class="delete-button">로그아웃</button>
+    </div>
   </div>
 
   <script>
@@ -70,6 +96,10 @@
         alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
         window.location.href = '/login.html';
       }
+    });
+
+    document.getElementById('product-page-button').addEventListener('click', () => {
+      window.location.href = '/product-list.html';
     });
 
     document.getElementById('edit-profile-button').addEventListener('click', () => {
