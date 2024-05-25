@@ -1,23 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>대시보드</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <div id="dashboard-content"></div>
+  <div class="container">
+    <h1>대시보드</h1>
+    <div id="dashboard-content">예약 주문관리 시스템에 오신 것을 환영합니다.</div>
+    <button id="edit-profile-button">회원정보 수정</button>
+    <button id="logout-button">로그아웃</button>
+  </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
       const token = localStorage.getItem('access_token');
       if (!token) {
-        window.location.href = '/login.html'; // 로그인 페이지로 리다이렉트
+        alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+        window.location.href = '/login.html';
         return;
       }
 
-      const response = await fetch('http://localhost:3000/dashboard', {
+      const response = await fetch('/dashboard', {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -28,9 +67,18 @@
         const data = await response.json();
         document.getElementById('dashboard-content').innerText = data.message;
       } else {
-        alert('Failed to load dashboard');
-        window.location.href = '/login.html'; // 로그인 페이지로 리다이렉트
+        alert('로그인이 필요합니다. 로그인 페이지로 이동합니다.');
+        window.location.href = '/login.html';
       }
+    });
+
+    document.getElementById('edit-profile-button').addEventListener('click', () => {
+      window.location.href = '/profile.html';
+    });
+
+    document.getElementById('logout-button').addEventListener('click', () => {
+      localStorage.removeItem('access_token'); // JWT 토큰 제거
+      window.location.href = '/index.html'; // 랜딩 페이지로 리다이렉트
     });
   </script>
 </body>

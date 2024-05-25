@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원정보 수정</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    input {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 20px;
+      width: 100%;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    .delete-button {
+      background-color: #ff4d4d;
+      margin-top: 10px;
+    }
+    .delete-button:hover {
+      background-color: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>회원정보</h1>
+    <form id="profile-form">
+      <input type="text" id="username" name="username" placeholder="Username" required>
+      <input type="password" id="password" name="password" placeholder="New Password">
+      <button type="submit">회원정보 수정</button>
+    </form>
+    <button id="delete-account-button" class="delete-button">회원탈퇴</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        window.location.href = '/login.html';
+        return;
+      }
+
+      const response = await fetch('/profile', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('username').value = data.username;
+        document.getElementById('delete-account-button').setAttribute('data-user-id', data.userId);
+      } else {
+        alert('Failed to load profile');
+        window.location.href = '/login.html';
+      }
+    });
+
+    document.getElementById('profile-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const token = localStorage.getItem('access_token');
+      const response = await fetch('/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        alert('회원정보 수정이 성공했습니다.');
+        window.location.href = '/dashboard.html'; // 대시보드 페이지로 리다이렉트
+      } else {
+        alert('회원정보 수정에 실패했습니다.');
+      }
+    });
+
+    document.getElementById('delete-account-button').addEventListener('click', async () => {
+      const confirmation = confirm('정말로 회원탈퇴 하시겠습니까?');
+      if (!confirmation) return;
+
+      const token = localStorage.getItem('access_token');
+      const userId = document.getElementById('delete-account-button').getAttribute('data-user-id');
+      const response = await fetch(`/profile/${userId}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        alert('회원탈퇴가 완료됐습니다. 서비스를 이용해주셔서 감사합니다.');
+        localStorage.removeItem('access_token');
+        window.location.href = '/index.html'; // 랜딩 페이지로 리다이렉트
+      } else {
+        alert('Failed to delete account');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -6,6 +6,6 @@ export class DashboardController {
   @UseGuards(JwtAuthGuard)
   @Get()
   getDashboard() {
-    return { message: 'Welcome to the dashboard!' };
+    return { message: '대시보드에 오신 것을 환영합니다!' };
   }
 }

@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     UsersModule,
     AuthModule,
     DashboardModule,
+    ProfileModule,
   ],
   controllers: [AppController],
 })
