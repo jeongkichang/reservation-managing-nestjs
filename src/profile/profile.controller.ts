@@ -17,7 +17,7 @@ export class ProfileController {
   @Post()
   async updateProfile(@Request() req, @Body() body) {
     const { username, password } = body;
-    await this.usersService.update(req.user.userId, username, password);
+    await this.usersService.update(req.user.id, username, password);
     return { message: 'Profile updated successfully' };
   }
 
