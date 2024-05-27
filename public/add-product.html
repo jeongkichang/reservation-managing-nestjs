@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Add Product</title>
+  <title>상품 등록</title>
   <style>
     body {
       display: flex;
@@ -72,7 +72,7 @@
 </head>
 <body>
   <div class="container">
-    <h1>Add Product</h1>
+    <h1>상품 등록</h1>
     <form id="add-product-form">
       <input type="text" id="name" name="name" placeholder="상품명" required>
       <input type="text" id="price" name="price" placeholder="가격" required>
@@ -94,7 +94,6 @@
       const productId = params.get('id');
 
       if (productId) {
-        document.getElementById('form-title').textContent = '상품 수정';
         const response = await fetch(`/api/products/${productId}`, {
           method: 'GET',
           headers: {
@@ -105,9 +104,20 @@
 
         if (response.ok) {
           const product = await response.json();
-          document.getElementById('name').value = product.name;
-          document.getElementById('price').value = product.price;
-          document.getElementById('description').value = product.description;
+          const nameField = document.getElementById('name');
+          const priceField = document.getElementById('price');
+          const descriptionField = document.getElementById('description');
+          const titleField = document.querySelector('h1');
+          
+          if (nameField && priceField && descriptionField && titleField) {
+            nameField.value = product.name;
+            priceField.value = product.price;
+            descriptionField.value = product.description;
+            titleField.textContent = '상품 수정';
+            document.title = '상품 수정';
+          } else {
+            console.error('폼 필드 또는 타이틀 요소를 찾을 수 없습니다.');
+          }
         } else {
           alert('상품 정보를 불러오는데 실패했습니다.');
           window.location.href = '/product-list.html';
