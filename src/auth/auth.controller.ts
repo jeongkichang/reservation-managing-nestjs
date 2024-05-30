@@ -11,8 +11,7 @@ export class AuthController {
   @Post('login')
   async login(@Request() req, @Res() res) {
     const accessToken = await this.authService.login(req.user);
-    // 클라이언트에서 리다이렉트 처리하기 위해 토큰을 반환합니다.
-    res.json({ access_token: accessToken }); // JSON 형태로 반환
+    res.json({ access_token: accessToken });
   }
 
   @Post('register')
